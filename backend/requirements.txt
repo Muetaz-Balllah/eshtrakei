@@ -1,0 +1,17 @@
+fastapi>=0.115
+uvicorn>=0.32
+sqlalchemy>=2.0
+alembic>=1.14
+pydantic-settings>=2.6
+pydantic[email]>=2.10
+PyJWT>=2.10
+bcrypt>=4.2
+redis>=5.2
+fakeredis>=2.26
+pytest>=8.3
+httpx>=0.28
+python-multipart>=0.0.20
+fpdf2>=2.8
+arabic-reshaper>=3.0
+python-bidi>=0.6
+APScheduler>=3.10

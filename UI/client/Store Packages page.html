@@ -1,0 +1,577 @@
+<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;font-family:'Plus Jakarta Sans',sans-serif;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-tertiary-fixed":"#002109","secondary":"#455f87","secondary-fixed-dim":"#adc8f5","on-secondary-fixed-variant":"#2d486d","on-secondary-container":"#3e5980","background":"#f8f9ff","error-container":"#ffdad6","tertiary-fixed-dim":"#4ae176","primary-container":"#f58220","primary-fixed":"#ffdcc6","surface-container-high":"#dce9ff","surface-container":"#e5eeff","on-primary":"#ffffff","surface-container-lowest":"#ffffff","secondary-container":"#b5d0fd","outline":"#8a7264","inverse-primary":"#ffb786","primary":"#964900","on-secondary-fixed":"#001c3b","tertiary":"#006e2f","on-primary-fixed":"#311300","tertiary-container":"#00b954","on-tertiary":"#ffffff","inverse-on-surface":"#eaf1ff","on-tertiary-fixed-variant":"#005321","on-tertiary-container":"#004119","surface-tint":"#964900","surface-container-highest":"#d3e4fe","surface-variant":"#d3e4fe","surface":"#f8f9ff","on-surface-variant":"#564336","primary-fixed-dim":"#ffb786","surface-container-low":"#eff4ff","surface-dim":"#cbdbf5","on-primary-container":"#5b2a00","tertiary-fixed":"#6bff8f","outline-variant":"#ddc1b0","secondary-fixed":"#d5e3ff","on-background":"#0b1c30","on-error-container":"#93000a","on-surface":"#0b1c30","on-primary-fixed-variant":"#723600","inverse-surface":"#213145","on-error":"#ffffff","on-secondary":"#ffffff","error":"#ba1a1a","surface-bright":"#f8f9ff"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"gutter-xs":"0.25rem","gutter-sm":"0.5rem","card-padding":"1.25rem","gutter-md":"0.75rem","gutter-lg":"1rem","gutter-xl":"1.25rem","gutter-2xl":"1.5rem","screen-margin":"1rem"},"fontFamily":{"headline-lg":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"]},"fontSize":{"headline-lg":["28px",{"lineHeight":"36px","fontWeight":"800"}],"body-sm":["12px",{"lineHeight":"18px","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"600"}],"headline-md":["22px",{"lineHeight":"30px","fontWeight":"700"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"600"}],"headline-sm":["18px",{"lineHeight":"26px","fontWeight":"700"}],"body-md":["14px",{"lineHeight":"20px","fontWeight":"500"}],"label-sm":["11px",{"lineHeight":"14px","fontWeight":"600"}],"label-lg":["14px",{"lineHeight":"18px","letterSpacing":"0.01em","fontWeight":"700"}]}}}}</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface flex flex-col min-h-screen selection:bg-primary/20"><header class="fixed top-0 inset-x-0 z-50 bg-surface/85 backdrop-blur-xl pt-safe"><div class="h-6 px-screen-margin flex items-center justify-between text-on-surface"><span class="font-label-sm text-label-sm">9:41</span><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px]">signal_cellular_4_bar</span><span class="material-symbols-outlined text-[15px]">wifi</span><span class="material-symbols-outlined text-[17px]">battery_full</span></div></div><div class="h-14 px-screen-margin flex items-center justify-between"><div class="flex items-center gap-gutter-md"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><h1 class="font-headline-sm text-headline-sm text-on-surface">Almatjar Walbaqat</h1></div><button aria-label="الإشعارات" class="w-11 h-11 flex items-center justify-center rounded-full text-secondary hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-[24px]">notifications</span></button></div></header><main class="flex flex-col relative w-full px-screen-margin pt-20 pb-28 bg-surface"><div class="flex flex-col w-full gap-gutter-lg pb-6 text-on-surface">
+<!-- Search & Filter Controls -->
+<div class="flex flex-col gap-gutter-sm">
+<div class="relative w-full">
+<input class="w-full h-12 pr-11 pl-4 rounded-2xl bg-surface-container-lowest text-on-surface placeholder:text-secondary/60 shadow-[0_4px_16px_rgba(30,58,95,0.04)] focus:outline-none focus:ring-2 focus:ring-primary-container/40 transition-all font-body-md text-body-md" id="store-search-input" placeholder="ابحث عن مزود خدمة أو باقة..." type="text">
+<span class="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-secondary/70 text-[20px] pointer-events-none">search</span>
+</div>
+<!-- Filter Chips Carousel -->
+
+</div>
+<!-- Featured ISP Carousel / Catalog -->
+<div class="flex flex-col gap-gutter-xs">
+<div class="flex items-center justify-between px-1">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">شركات ومزودي الخدمة</h2>
+<span class="font-label-md text-label-md text-primary font-bold">4 مزودين</span>
+</div>
+<div class="flex items-stretch gap-3 overflow-x-auto no-scrollbar py-1 -mx-screen-margin px-screen-margin">
+<!-- Provider 1: Spark (Active / Selected) -->
+<div class="provider-card flex-shrink-0 w-60 p-card-padding rounded-3xl bg-surface-container-lowest shadow-[0_10px_25px_-5px_rgba(30,58,95,0.07)] flex flex-col justify-between cursor-pointer transition-all duration-300 ring-2 ring-primary-container" onclick="selectProvider(this, 'Spark Technology')">
+<div class="flex items-start justify-between">
+<div class="w-11 h-11 rounded-2xl bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[26px]">bolt</span>
+</div>
+<span class="px-2.5 py-1 rounded-full font-label-sm text-label-sm bg-tertiary-container/15 text-tertiary font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+            مزودك الحالي
+          </span>
+</div>
+<div class="mt-3">
+<h3 class="font-body-lg text-body-lg text-on-surface truncate">Spark Technology</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="flex items-center text-amber-500 font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[15px] fill-current" style="font-variation-settings: &quot;FILL&quot; 1;">star</span>
+              4.9
+            </span>
+<span class="text-secondary/40 font-body-sm text-body-sm">•</span>
+<span class="font-body-sm text-body-sm text-secondary">12 باقة متاحة</span>
+</div>
+</div>
+</div>
+<!-- Provider 2: LTT -->
+<div class="provider-card flex-shrink-0 w-60 p-card-padding rounded-3xl bg-surface-container-lowest shadow-[0_10px_25px_-5px_rgba(30,58,95,0.07)] flex flex-col justify-between cursor-pointer opacity-90 transition-all duration-300 hover:opacity-100" onclick="selectProvider(this, 'ليبيا للاتصالات LTT')">
+<div class="flex items-start justify-between">
+<div class="w-11 h-11 rounded-2xl bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[26px]">router</span>
+</div>
+<span class="px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-surface-container text-secondary">
+            شريك معتمد
+          </span>
+</div>
+<div class="mt-3">
+<h3 class="font-body-lg text-body-lg text-on-surface truncate">ليبيا للاتصالات LTT</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="flex items-center text-amber-500 font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[15px] fill-current" style="font-variation-settings: &quot;FILL&quot; 1;">star</span>
+              4.8
+            </span>
+<span class="text-secondary/40 font-body-sm text-body-sm">•</span>
+<span class="font-body-sm text-body-sm text-secondary">8 باقات متاحة</span>
+</div>
+</div>
+</div>
+<!-- Provider 3: Giga -->
+<div class="provider-card flex-shrink-0 w-60 p-card-padding rounded-3xl bg-surface-container-lowest shadow-[0_10px_25px_-5px_rgba(30,58,95,0.07)] flex flex-col justify-between cursor-pointer opacity-90 transition-all duration-300 hover:opacity-100" onclick="selectProvider(this, 'جيجا للاتصالات Giga')">
+<div class="flex items-start justify-between">
+<div class="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[26px]">cell_tower</span>
+</div>
+<span class="px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-surface-container text-secondary">
+            تغطية واسعة
+          </span>
+</div>
+<div class="mt-3">
+<h3 class="font-body-lg text-body-lg text-on-surface truncate">جيجا للاتصالات Giga</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="flex items-center text-amber-500 font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[15px] fill-current" style="font-variation-settings: &quot;FILL&quot; 1;">star</span>
+              4.7
+            </span>
+<span class="text-secondary/40 font-body-sm text-body-sm">•</span>
+<span class="font-body-sm text-body-sm text-secondary">15 باقة متاحة</span>
+</div>
+</div>
+</div>
+<!-- Provider 4: Rawafed -->
+<div class="provider-card flex-shrink-0 w-60 p-card-padding rounded-3xl bg-surface-container-lowest shadow-[0_10px_25px_-5px_rgba(30,58,95,0.07)] flex flex-col justify-between cursor-pointer opacity-90 transition-all duration-300 hover:opacity-100" onclick="selectProvider(this, 'روافد ليبيا Rawafed')">
+<div class="flex items-start justify-between">
+<div class="w-11 h-11 rounded-2xl bg-secondary/15 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[26px]">language</span>
+</div>
+<span class="px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-surface-container text-secondary">
+            فايبر سريع
+          </span>
+</div>
+<div class="mt-3">
+<h3 class="font-body-lg text-body-lg text-on-surface truncate">روافد ليبيا Rawafed</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="flex items-center text-amber-500 font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[15px] fill-current" style="font-variation-settings: &quot;FILL&quot; 1;">star</span>
+              4.6
+            </span>
+<span class="text-secondary/40 font-body-sm text-body-sm">•</span>
+<span class="font-body-sm text-body-sm text-secondary">6 باقات متاحة</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Special Offer Promo Hero Banner (Spark) -->
+<div class="relative w-full rounded-3xl overflow-hidden shadow-[0_12px_28px_rgba(30,58,95,0.08)] bg-inverse-surface text-inverse-on-surface">
+<div class="absolute inset-0 opacity-40 bg-cover bg-center" data-alt="High quality commercial photograph of a cozy modern living room with warm interior lamp illumination at night where a young Libyan professional is happily holding an advanced smartphone gaming and streaming high-speed internet. Spark technology logo branding, deep navy blue accents with energetic bright orange connectivity glow highlights." style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBDWWvmCdvkhJ7lknDVQC3pT5dUdFLSI8fXvM3YGNwsSCB6q6iI4E_0amv-g3txqnzmS3zzM2gcC15UygK-eJtkAKyZAUEjtRj-7BzhLw2r-5oioCaUJ90ad3uV4LWsEHDTmFLwAlUs8JH6n857yfg-xPQ9LUtYD1O6PX7fwTMvPD5RnZns4w70MKWfab_Vi3tFS-0b9ZK67b5Vef6VkSnih5TW4XwD_Da0B5oeQ4tJS4_r2-_lJiF0kg&quot;);"></div>
+<div class="absolute inset-0 bg-gradient-to-l from-inverse-surface via-inverse-surface/85 to-transparent"></div>
+<div class="relative z-10 p-card-padding flex flex-col gap-2.5 max-w-[70%]">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm w-fit shadow-sm">
+<span class="material-symbols-outlined text-[14px]">local_fire_department</span>
+        عروض Spark الحصرية
+      </div>
+<h3 class="font-headline-md text-headline-md text-white leading-tight">ما تخليش وقتك فاضي</h3>
+<p class="font-body-sm text-body-sm text-secondary-container">تجديد فوري لجميع الباقات مع مضاعفة سعة الليل مجاناً طوال الشهر.</p>
+<div class="mt-1 inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 backdrop-blur-md text-white font-label-md text-label-md w-fit">
+<span class="material-symbols-outlined text-primary-container text-[18px]">support_agent</span>
+<span dir="ltr" class="">091 424 1616</span>
+</div>
+</div>
+</div>
+<!-- Packages Section Header -->
+<div class="flex items-center justify-between pt-1">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">الباقات المتوفرة للتجديد</h2>
+<p class="font-body-sm text-body-sm text-secondary" id="active-provider-label">مزود الخدمة: Spark Technology</p>
+</div>
+<span class="material-symbols-outlined text-secondary">tune</span>
+</div>
+<!-- Packages List -->
+<div class="flex flex-col gap-4" id="packages-container">
+<!-- Card 1: SPEED EXTRA (Popular) -->
+<div class="package-card relative rounded-3xl bg-surface-container-lowest p-card-padding shadow-[0_10px_25px_-5px_rgba(30,58,95,0.07)] flex flex-col gap-4 transition-all">
+<div class="flex items-start justify-between">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-6 rounded-full bg-primary-container"></span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">SPEED EXTRA</h3>
+</div>
+<span class="font-body-sm text-body-sm text-secondary">الخيار الأمثل للبث بدقة 4K والعمل المستمر</span>
+</div>
+<span class="px-3 py-1 rounded-full font-label-sm text-label-sm bg-primary-container text-on-primary font-bold shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+          الأكثر شعبية
+        </span>
+</div>
+<!-- Telemetry Gauge/Metrics Row -->
+<div class="grid grid-cols-3 gap-2">
+<div class="rounded-2xl bg-surface-container-low p-2.5 flex flex-col items-center justify-center text-center">
+<div class="flex items-center gap-1 text-primary-container">
+<span class="material-symbols-outlined text-[18px]">speed</span>
+<span class="font-label-lg text-label-lg" dir="ltr">40 Mbps</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary mt-0.5">السرعة</span>
+</div>
+<div class="rounded-2xl bg-surface-container-low p-2.5 flex flex-col items-center justify-center text-center">
+<div class="flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-secondary">data_usage</span>
+<span class="font-label-lg text-label-lg" dir="ltr">300 GB</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary mt-0.5">السعة الشهرية</span>
+</div>
+<div class="rounded-2xl bg-surface-container-low p-2.5 flex flex-col items-center justify-center text-center">
+<div class="flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-secondary">calendar_today</span>
+<span class="font-label-lg text-label-lg">30 يوم</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary mt-0.5">الصلاحية</span>
+</div>
+</div>
+<!-- Price & CTA Button -->
+<div class="flex items-center justify-between pt-2">
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-secondary">السعر الشهري</span>
+<div class="flex items-baseline gap-1">
+<span class="font-headline-md text-headline-md text-on-surface font-extrabold">90</span>
+<span class="font-label-md text-label-md text-secondary">د.ل / شهر</span>
+</div>
+</div>
+<button class="h-[52px] px-6 rounded-2xl bg-inverse-surface hover:bg-inverse-surface/90 active:scale-[0.98] text-inverse-on-surface font-label-lg text-label-lg flex items-center justify-center gap-2 shadow-md transition-all" onclick="openCheckoutModal('SPEED EXTRA', '90 د.ل', 'GB 300', '40 Mbps', 'Spark Technology')">
+<span class="">شراء وتفعيل الآن</span>
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+</button>
+</div>
+</div>
+<!-- Card 2: ULTRA FIBER PRO -->
+<div class="package-card relative rounded-3xl bg-surface-container-lowest p-card-padding shadow-[0_10px_25px_-5px_rgba(30,58,95,0.07)] flex flex-col gap-4 transition-all">
+<div class="flex items-start justify-between">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-6 rounded-full bg-secondary"></span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">ULTRA FIBER PRO</h3>
+</div>
+<span class="font-body-sm text-body-sm text-secondary">تصفح ليلي غير محدود + أداء عالي للألعاب</span>
+</div>
+<span class="px-3 py-1 rounded-full font-label-sm text-label-sm bg-secondary-container text-on-secondary-container font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">rocket_launch</span>
+          سرعات فائقة
+        </span>
+</div>
+<!-- Telemetry Gauge/Metrics Row -->
+<div class="grid grid-cols-3 gap-2">
+<div class="rounded-2xl bg-surface-container-low p-2.5 flex flex-col items-center justify-center text-center">
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[18px]">speed</span>
+<span class="font-label-lg text-label-lg" dir="ltr">100 Mbps</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary mt-0.5">السرعة</span>
+</div>
+<div class="rounded-2xl bg-surface-container-low p-2.5 flex flex-col items-center justify-center text-center">
+<div class="flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-secondary">all_inclusive</span>
+<span class="font-label-lg text-label-lg" dir="ltr">600 GB</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary mt-0.5">السعة الإجمالية</span>
+</div>
+<div class="rounded-2xl bg-surface-container-low p-2.5 flex flex-col items-center justify-center text-center">
+<div class="flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-secondary">calendar_today</span>
+<span class="font-label-lg text-label-lg">30 يوم</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary mt-0.5">الصلاحية</span>
+</div>
+</div>
+<!-- Price & CTA Button -->
+<div class="flex items-center justify-between pt-2">
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-secondary">السعر الشهري</span>
+<div class="flex items-baseline gap-1">
+<span class="font-headline-md text-headline-md text-on-surface font-extrabold">160</span>
+<span class="font-label-md text-label-md text-secondary">د.ل / شهر</span>
+</div>
+</div>
+<button class="h-[52px] px-6 rounded-2xl bg-inverse-surface hover:bg-inverse-surface/90 active:scale-[0.98] text-inverse-on-surface font-label-lg text-label-lg flex items-center justify-center gap-2 shadow-md transition-all" onclick="openCheckoutModal('ULTRA FIBER PRO', '160 د.ل', 'GB 600', '100 Mbps', 'Spark Technology')">
+<span class="">شراء وتفعيل الآن</span>
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+</button>
+</div>
+</div>
+<!-- Card 3: BASIC HOME -->
+<div class="package-card relative rounded-3xl bg-surface-container-lowest p-card-padding shadow-[0_10px_25px_-5px_rgba(30,58,95,0.07)] flex flex-col gap-4 transition-all">
+<div class="flex items-start justify-between">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-6 rounded-full bg-secondary/40"></span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">BASIC HOME</h3>
+</div>
+<span class="font-body-sm text-body-sm text-secondary">مناسب للاستخدام المنزلي الخفيف والتصفح اليومي</span>
+</div>
+<span class="px-3 py-1 rounded-full font-label-sm text-label-sm bg-surface-container text-secondary font-bold">
+          اقتصادي
+        </span>
+</div>
+<!-- Telemetry Gauge/Metrics Row -->
+<div class="grid grid-cols-3 gap-2">
+<div class="rounded-2xl bg-surface-container-low p-2.5 flex flex-col items-center justify-center text-center">
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[18px]">speed</span>
+<span class="font-label-lg text-label-lg" dir="ltr">20 Mbps</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary mt-0.5">السرعة</span>
+</div>
+<div class="rounded-2xl bg-surface-container-low p-2.5 flex flex-col items-center justify-center text-center">
+<div class="flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-secondary">data_usage</span>
+<span class="font-label-lg text-label-lg" dir="ltr">150 GB</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary mt-0.5">السعة الشهرية</span>
+</div>
+<div class="rounded-2xl bg-surface-container-low p-2.5 flex flex-col items-center justify-center text-center">
+<div class="flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-secondary">calendar_today</span>
+<span class="font-label-lg text-label-lg">30 يوم</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary mt-0.5">الصلاحية</span>
+</div>
+</div>
+<!-- Price & CTA Button -->
+<div class="flex items-center justify-between pt-2">
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-secondary">السعر الشهري</span>
+<div class="flex items-baseline gap-1">
+<span class="font-headline-md text-headline-md text-on-surface font-extrabold">50</span>
+<span class="font-label-md text-label-md text-secondary">د.ل / شهر</span>
+</div>
+</div>
+<button class="h-[52px] px-6 rounded-2xl bg-surface-container hover:bg-surface-container-high active:scale-[0.98] text-on-surface font-label-lg text-label-lg flex items-center justify-center gap-2 transition-all" onclick="openCheckoutModal('BASIC HOME', '50 د.ل', 'GB 150', '20 Mbps', 'Spark Technology')">
+<span class="">شراء وتفعيل</span>
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Interactive Checkout Sheet / Modal Overlay -->
+<div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden items-end justify-center transition-opacity duration-300" id="checkout-modal">
+<!-- Modal Card Container -->
+<div class="w-full max-w-md bg-surface-container-lowest rounded-t-[32px] p-card-padding flex flex-col gap-4 shadow-[0_-12px_40px_rgba(0,0,0,0.18)] max-h-[795px] overflow-y-auto pb-10 transform translate-y-full transition-transform duration-300 ease-out" id="modal-content">
+<!-- Top Handle Bar & Header -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-12 h-1.5 rounded-full bg-secondary/20"></div>
+<div class="flex items-center justify-between w-full pt-1">
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 rounded-full bg-primary-container/15 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]">shopping_bag</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">إتمام الاشتراك والتجديد</h2>
+</div>
+<button aria-label="إغلاق" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary hover:text-on-surface transition-colors" onclick="closeCheckoutModal()">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</div>
+<!-- Selected Package Summary Box -->
+<div class="rounded-2xl bg-surface-container-low p-card-padding flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-secondary">الباقة المختارة</span>
+<span class="font-label-sm text-label-sm text-primary font-bold" id="modal-provider-name">Spark Technology</span>
+</div>
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-on-surface" id="modal-package-title">SPEED EXTRA</h3>
+<span class="font-headline-sm text-headline-sm text-primary-container font-extrabold" id="modal-package-price">90 د.ل</span>
+</div>
+<div class="flex items-center gap-3 pt-1 text-secondary font-label-md text-label-md">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">speed</span>
+<span id="modal-speed-spec" class="">40 Mbps</span>
+</span>
+<span class="">•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">cloud_sync</span>
+<span id="modal-quota-spec" class="">GB 300</span>
+</span>
+</div>
+</div>
+<!-- Coupon Code Input Box -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-secondary">كود الخصم (كوبون)</label>
+<div class="flex items-center gap-2">
+<div class="relative flex-1">
+<input class="w-full h-12 pr-10 pl-3 rounded-2xl bg-surface-container text-on-surface placeholder:text-secondary/50 font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary-container" id="coupon-input" placeholder="أدخل كود الخصم هنا..." type="text">
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-secondary text-[20px]">confirmation_number</span>
+</div>
+<button class="h-12 px-5 rounded-2xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-lg text-label-lg transition-all active:scale-95" onclick="applyCoupon()">
+            تطبيق
+          </button>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary hidden" id="coupon-feedback">تم تطبيق خصم 10% بنجاح!</span>
+</div>
+<!-- Payment Methods Selection -->
+<div class="flex flex-col gap-2">
+<span class="font-label-md text-label-md text-secondary">طريقة الدفع</span>
+<label class="flex items-center justify-between p-3 rounded-2xl bg-surface-container-low cursor-pointer transition-all hover:bg-surface-container">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary-container/15 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[22px]">account_balance_wallet</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">المحفظة الإلكترونية</span>
+<span class="font-body-sm text-body-sm text-secondary">رصيد الحساب: 0.00 د.ل (بحاجة لشحن)</span>
+</div>
+</div>
+<input class="accent-primary-container w-4 h-4" name="payment_method" type="radio" value="wallet">
+</label>
+<label class="flex items-center justify-between p-3 rounded-2xl bg-surface-container-low cursor-pointer transition-all hover:bg-surface-container">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-secondary-container/40 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">credit_card</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">بطاقة تداول / سداد / إدفع لي</span>
+<span class="font-body-sm text-body-sm text-secondary">دفع فوري بالرمز المالي</span>
+</div>
+</div>
+<input checked="" class="accent-primary-container w-4 h-4" name="payment_method" type="radio" value="tadawul">
+</label>
+<label class="flex items-center justify-between p-3 rounded-2xl bg-surface-container-low cursor-pointer transition-all hover:bg-surface-container">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">contactless</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">بطاقة مصرفية (فيزا / ماستركارد)</span>
+<span class="font-body-sm text-body-sm text-secondary">الدفع المباشر عبر البنك</span>
+</div>
+</div>
+<input class="accent-primary-container w-4 h-4" name="payment_method" type="radio" value="bank">
+</label>
+</div>
+<!-- Detailed Price Breakdown -->
+<div class="rounded-2xl bg-surface-container-low/60 p-3.5 flex flex-col gap-2 text-on-surface">
+<div class="flex justify-between font-body-sm text-body-sm text-secondary">
+<span class="">سعر الباقة الأساسي</span>
+<span id="summary-subtotal" class="">90.00 د.ل</span>
+</div>
+<div class="flex justify-between font-body-sm text-body-sm text-secondary">
+<span class="">الضريبة والرسوم</span>
+<span class="">0.00 د.ل</span>
+</div>
+<div class="flex justify-between font-body-sm text-body-sm text-tertiary hidden" id="discount-row">
+<span class="">الخصم المطبق</span>
+<span id="discount-amount" class="">-9.00 د.ل</span>
+</div>
+<div class="h-[1px] bg-secondary/15 my-1"></div>
+<div class="flex justify-between font-headline-sm text-headline-sm text-on-surface font-bold">
+<span class="">المبلغ الإجمالي</span>
+<span class="text-primary-container" id="summary-total">90.00 د.ل</span>
+</div>
+</div>
+<!-- Modal Action Buttons -->
+<div class="flex flex-col gap-2 pt-1">
+<button class="w-full h-[52px] rounded-2xl bg-primary-container hover:bg-primary-container/90 active:scale-[0.98] text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-2 shadow-lg shadow-primary-container/20 transition-all" onclick="confirmOrder()">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+<span class="">تأكيد الدفع والتجديد الفوري</span>
+</button>
+<button class="w-full h-11 rounded-2xl bg-surface-container hover:bg-surface-container-high active:scale-[0.98] text-secondary font-label-md text-label-md flex items-center justify-center gap-2 transition-all" onclick="downloadPdfInvoice()">
+<span class="material-symbols-outlined text-[18px]">download_for_offline</span>
+<span class="">معاينة وتحميل الفاتورة PDF</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Success Toast / Notification Popup -->
+<div class="fixed top-24 left-1/2 -translate-x-1/2 z-50 px-4 py-3 rounded-2xl bg-inverse-surface text-inverse-on-surface shadow-2xl flex items-center gap-2.5 transition-all duration-300 opacity-0 pointer-events-none transform -translate-y-4" id="toast-message">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-[20px]" id="toast-icon">check_circle</span>
+<span class="font-label-md text-label-md" id="toast-text">تم تفعيل الاشتراك وتجديد الباقة بنجاح!</span>
+</div>
+</div>
+<script>
+  // Filter Chips Toggle
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.filter-chip').forEach(c => {
+        c.classList.remove('bg-inverse-surface', 'text-inverse-on-surface', 'shadow-sm');
+        c.classList.add('bg-surface-container-lowest', 'text-secondary');
+      });
+      chip.classList.remove('bg-surface-container-lowest', 'text-secondary');
+      chip.classList.add('bg-inverse-surface', 'text-inverse-on-surface', 'shadow-sm');
+    });
+  });
+
+  // Select Provider Handler
+  function selectProvider(cardElement, providerName) {
+    document.querySelectorAll('.provider-card').forEach(c => {
+      c.classList.remove('ring-2', 'ring-primary-container', 'opacity-100');
+      c.classList.add('opacity-90');
+    });
+    cardElement.classList.remove('opacity-90');
+    cardElement.classList.add('ring-2', 'ring-primary-container', 'opacity-100');
+    
+    const label = document.getElementById('active-provider-label');
+    if (label) {
+      label.textContent = 'مزود الخدمة: ' + providerName;
+    }
+  }
+
+  // Modal Open / Close Logic
+  const modal = document.getElementById('checkout-modal');
+  const modalContent = document.getElementById('modal-content');
+  let currentBasePrice = 90;
+
+  function openCheckoutModal(title, priceStr, quota, speed, provider) {
+    document.getElementById('modal-package-title').textContent = title;
+    document.getElementById('modal-package-price').textContent = priceStr;
+    document.getElementById('modal-provider-name').textContent = provider;
+    document.getElementById('modal-speed-spec').textContent = speed;
+    document.getElementById('modal-quota-spec').textContent = quota;
+
+    // Parse price
+    const numericPrice = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 90;
+    currentBasePrice = numericPrice;
+    document.getElementById('summary-subtotal').textContent = numericPrice.toFixed(2) + ' د.ل';
+    document.getElementById('summary-total').textContent = numericPrice.toFixed(2) + ' د.ل';
+
+    // Reset coupon
+    document.getElementById('discount-row').classList.add('hidden');
+    document.getElementById('coupon-feedback').classList.add('hidden');
+    document.getElementById('coupon-input').value = '';
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    requestAnimationFrame(() => {
+      modalContent.classList.remove('translate-y-full');
+      modalContent.classList.add('translate-y-0');
+    });
+  }
+
+  function closeCheckoutModal() {
+    modalContent.classList.remove('translate-y-0');
+    modalContent.classList.add('translate-y-full');
+    setTimeout(() => {
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+    }, 280);
+  }
+
+  // Close when clicking outside of modal card
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeCheckoutModal();
+    }
+  });
+
+  // Apply Coupon Logic
+  function applyCoupon() {
+    const input = document.getElementById('coupon-input');
+    const feedback = document.getElementById('coupon-feedback');
+    const discountRow = document.getElementById('discount-row');
+    const discountAmount = document.getElementById('discount-amount');
+    const totalElement = document.getElementById('summary-total');
+
+    if (input.value.trim().length > 0) {
+      const discount = currentBasePrice * 0.10;
+      const total = currentBasePrice - discount;
+      discountAmount.textContent = '-' + discount.toFixed(2) + ' د.ل';
+      totalElement.textContent = total.toFixed(2) + ' د.ل';
+      discountRow.classList.remove('hidden');
+      feedback.classList.remove('hidden');
+      showToast('تم تطبيق كود الخصم بنجاح (-10%)');
+    } else {
+      input.focus();
+    }
+  }
+
+  // Confirm Order Action
+  function confirmOrder() {
+    closeCheckoutModal();
+    showToast('تم تفعيل الاشتراك وتجديد الباقة بنجاح!');
+  }
+
+  // Download PDF Invoice Action
+  function downloadPdfInvoice() {
+    showToast('جاري إنشاء وتحميل فاتورة الاشتراك...');
+  }
+
+  // Toast Helper
+  function showToast(message) {
+    const toast = document.getElementById('toast-message');
+    const toastText = document.getElementById('toast-text');
+    toastText.textContent = message;
+    
+    toast.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-4');
+    toast.classList.add('opacity-100', 'translate-y-0');
+
+    setTimeout(() => {
+      toast.classList.remove('opacity-100', 'translate-y-0');
+      toast.classList.add('opacity-0', 'pointer-events-none', '-translate-y-4');
+    }, 3200);
+  }
+
+  // Local package filter simulation via search input
+  const searchInput = document.getElementById('store-search-input');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      document.querySelectorAll('.package-card').forEach(card => {
+        const text = card.textContent.toLowerCase();
+        if (text.includes(query)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  }
+</script></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl rounded-t-3xl shadow-[0_-8px_24px_rgba(30,58,95,0.08)]" data-active-classes="!bg-inverse-surface !text-inverse-on-surface"><div class="flex justify-around items-center h-20 px-gutter-md"><a class="group flex flex-col items-center justify-center gap-1 min-w-[64px] min-h-[48px] py-1.5 px-3 rounded-full text-secondary transition-all" data-path="alrayisiat" href="#"><span class="material-symbols-outlined text-[24px]">home</span><span class="font-label-sm text-label-sm">الرئيسية</span></a><a aria-current="page" class="group flex flex-col items-center justify-center gap-1 min-w-[64px] min-h-[48px] py-1.5 px-3 rounded-full text-secondary transition-all !bg-inverse-surface !text-inverse-on-surface" data-path="almatjar-walbaqat" href="#"><span class="material-symbols-outlined text-[24px]">store</span><span class="font-label-sm text-label-sm">المتجر والباقات</span></a><a class="group flex flex-col items-center justify-center gap-1 min-w-[64px] min-h-[48px] py-1.5 px-3 rounded-full text-secondary transition-all" data-path="aliedadat" href="#"><span class="material-symbols-outlined text-[24px]">settings</span><span class="font-label-sm text-label-sm">الإعدادات</span></a></div></nav>
+
+</body></html>
