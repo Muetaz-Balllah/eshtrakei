@@ -1,22 +1,22 @@
 # Eshtrakei
 
-سوق اشتراكات الإنترنت: حساب زبون واحد، عدة شركات، موظف واحد لكل شركة، ومدير منصة واحد.
+An internet subscription marketplace: one client account, many internet companies, one manager per company, and one platform admin.
 
-الواجهة عربية واتجاهها من اليمين إلى اليسار. هذا المستودع يجمع الواجهة والخلفية معًا.
+The website UI is Arabic and right-to-left. This repository contains the frontend and the backend together.
 
-| الجزء | التقنية | المجلد |
+| Part | Stack | Folder |
 | --- | --- | --- |
-| الواجهة | Next.js 16، React 19، Tailwind CSS 4 | `frontend/` |
-| الخلفية | FastAPI، SQLAlchemy، Alembic | `backend/` |
-| قاعدة التطوير | SQLite | تُنشأ محليًا ولا تُرفع |
-| الجلسات | Redis | مطلوب أثناء التشغيل |
-| مسودات التصميم | HTML | `UI/` |
+| Frontend | Next.js 16, React 19, Tailwind CSS 4 | `frontend/` |
+| Backend | FastAPI, SQLAlchemy, Alembic | `backend/` |
+| Development database | SQLite | Created locally and not committed |
+| Sessions | Redis | Required while the API is running |
+| Design drafts | HTML | `UI/` |
 
-## التشغيل المحلي
+## Local setup
 
-شغّل الأوامر من جذر المشروع إلا عند الدخول إلى `frontend`.
+Run these commands from the project root, except when the steps enter `frontend`.
 
-### 1. الخلفية
+### 1. Backend
 
 ```powershell
 python -m venv .venv
@@ -25,7 +25,7 @@ pip install -r backend/requirements.txt
 Copy-Item backend\.env.example backend\.env
 ```
 
-عدّل `backend/.env` وضع قيمة لـ `JWT_SECRET` و`PLATFORM_ADMIN_PASSWORD`. ثم:
+Edit `backend/.env` and set `JWT_SECRET` and `PLATFORM_ADMIN_PASSWORD`. Then:
 
 ```powershell
 alembic upgrade head
@@ -33,11 +33,11 @@ python -m backend.scripts.seed_admin
 uvicorn backend.main:app --reload
 ```
 
-الخلفية تعمل على `http://127.0.0.1:8000`. فحص الصحة: `GET /api/health`.
+The API runs at `http://127.0.0.1:8000`. Health check: `GET /api/health`.
 
-Redis يجب أن يعمل على `redis://localhost:6379/0`.
+Redis must be available at `redis://localhost:6379/0`.
 
-### 2. الواجهة
+### 2. Frontend
 
 ```powershell
 cd frontend
@@ -46,20 +46,20 @@ npm install
 npm run dev
 ```
 
-الواجهة تعمل على `http://localhost:3000` وتعيد توجيه طلبات `/api` إلى الخلفية.
+The site runs at `http://localhost:3000` and proxies `/api` requests to the backend.
 
-## الاختبارات
+## Tests
 
 ```powershell
 pytest backend/tests
 ```
 
-من مجلد الواجهة:
+From the frontend folder:
 
 ```powershell
 npm run lint
 ```
 
-## ما لا يُرفع
+## What stays local
 
-ملفات `.env`، البيئة الافتراضية، `node_modules`، قاعدة `dev.db`، ومجلد الملفات المرفوعة تبقى على جهازك. القوالب الآمنة هي `backend/.env.example` و`frontend/.env.example`.
+`.env` files, the virtual environment, `node_modules`, `dev.db`, and uploaded files stay on your machine. The safe templates are `backend/.env.example` and `frontend/.env.example`.
