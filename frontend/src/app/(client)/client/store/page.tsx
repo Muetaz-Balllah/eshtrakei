@@ -5,7 +5,7 @@ import Link from "next/link";
 import { RoleShell } from "@/components/shell/role-shell";
 import { BannerCarousel, PromoBanner } from "@/components/ui/banner-carousel";
 import { EmptyState, fieldClass, Icon, Notice } from "@/components/ui/ui";
-import { apiFetch, apiUrl, authHeaders } from "@/lib/api";
+import { apiFetch, apiUrl, authHeaders, newIdempotencyKey } from "@/lib/api";
 import { readCompanyId, writeCompanyId } from "@/lib/selected-company";
 import { ar } from "@/messages/ar";
 
@@ -92,8 +92,8 @@ export default function StorePage() {
       body: JSON.stringify({
         company_id: selected,
         package_id: open.id,
-        coupon_code: coupon || null,
-        idempotency_key: crypto.randomUUID(),
+        coupon_code: coupon.trim() || null,
+        idempotency_key: newIdempotencyKey(),
         pay_with_wallet: true,
       }),
     });
@@ -138,7 +138,7 @@ export default function StorePage() {
         <h2 className="font-extrabold">{ar.companies}</h2>
         <span className="text-sm font-bold text-primary">{visibleCompanies.length}</span>
       </div>
-      <div className="flex gap-3 overflow-x-auto pb-1">
+      <div className="flex gap-3 overflow-x-auto px-1 py-2">
         {visibleCompanies.map((row, index) => {
           const current = row.id === company?.id;
           const mine = activeIds.includes(row.id);
@@ -147,7 +147,7 @@ export default function StorePage() {
               key={row.id}
               type="button"
               onClick={() => choose(row.id)}
-              className={`flex min-h-40 w-60 shrink-0 flex-col rounded-3xl bg-surface-lowest p-5 text-start shadow-[0_10px_25px_-5px_rgba(30,58,95,0.07)] transition hover:opacity-100 ${current ? "ring-2 ring-primary-container" : "opacity-90"}`}
+              className={`flex min-h-44 w-60 shrink-0 flex-col rounded-3xl bg-surface-lowest p-5 text-start shadow-[0_10px_25px_-5px_rgba(30,58,95,0.07)] transition hover:opacity-100 ${current ? "ring-2 ring-primary-container" : "opacity-90"}`}
             >
               <span className="flex items-start justify-between">
                 <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-container/10 text-primary-container">

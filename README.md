@@ -14,6 +14,8 @@ The website UI is Arabic and right-to-left. This repository contains the fronten
 
 ## Local setup
 
+The short startup order is in [RUNNING.md](RUNNING.md).
+
 Run these commands from the project root, except when the steps enter `frontend`.
 
 ### 1. Backend

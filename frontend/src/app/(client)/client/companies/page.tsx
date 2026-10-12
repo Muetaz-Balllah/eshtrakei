@@ -6,7 +6,7 @@ import { RoleShell } from "@/components/shell/role-shell";
 import { BannerCarousel, PromoBanner } from "@/components/ui/banner-carousel";
 import { QuotaRing } from "@/components/ui/quota-ring";
 import { EmptyState, Icon, Notice } from "@/components/ui/ui";
-import { apiFetch, apiUrl, authHeaders } from "@/lib/api";
+import { apiFetch, apiUrl, authHeaders, newIdempotencyKey } from "@/lib/api";
 import { readCompanyId, writeCompanyId } from "@/lib/selected-company";
 import { ar } from "@/messages/ar";
 
@@ -103,7 +103,7 @@ export default function ClientHomePage() {
     const response = await apiFetch(`/api/subscriptions/${subscription.id}/renew`, {
       method: "POST",
       headers: { ...authHeaders(), "Content-Type": "application/json" },
-      body: JSON.stringify({ idempotency_key: crypto.randomUUID(), pay_with_wallet: true }),
+      body: JSON.stringify({ idempotency_key: newIdempotencyKey(), pay_with_wallet: true }),
     });
     const body = await response.json();
     setNotice(response.ok ? body.message : body.message ?? ar.purchaseFail);

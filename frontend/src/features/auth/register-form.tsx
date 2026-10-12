@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { fieldClass, primaryButton } from "@/components/ui/ui";
 import { apiUrl } from "@/lib/api";
+import { passwordIsStrong } from "@/lib/password";
 import { saveSession } from "@/lib/auth-storage";
 import { ar } from "@/messages/ar";
 
 export function RegisterForm() {
   const router = useRouter();
   const [error, setError] = useState("");
-  const [form, setForm] = useState({ full_name: "", city: "", phone: "", email: "", password: "" });
+  const [form, setForm] = useState({ full_name: "", city: "", phone: "", email: "", password: "", confirm: "" });
 
   function set(key: string, value: string) {
     setForm((current) => ({ ...current, [key]: value }));
@@ -20,10 +21,19 @@ export function RegisterForm() {
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
     setError("");
+    if (form.password !== form.confirm) {
+      setError(ar.passwordMismatch);
+      return;
+    }
+    if (!passwordIsStrong(form.password)) {
+      setError(ar.passwordHint);
+      return;
+    }
+    const payload = { full_name: form.full_name, city: form.city, phone: form.phone, email: form.email, password: form.password };
     const response = await fetch(apiUrl("/api/auth/register"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify(payload),
     });
     const body = await response.json();
     if (!response.ok) {
@@ -58,6 +68,10 @@ export function RegisterForm() {
         {ar.password}
         <input required type="password" minLength={8} className={fieldClass} value={form.password} onChange={(e) => set("password", e.target.value)} />
         <span className="text-xs font-medium text-secondary">{ar.passwordHint}</span>
+      </label>
+      <label className="flex flex-col gap-2 text-sm font-bold text-secondary">
+        {ar.confirmPassword}
+        <input required type="password" className={fieldClass} value={form.confirm} onChange={(e) => set("confirm", e.target.value)} />
       </label>
       {error ? <p className="rounded-2xl bg-error-container px-4 py-3 text-sm font-semibold text-error">{error}</p> : null}
       <button type="submit" className={primaryButton}>

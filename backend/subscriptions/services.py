@@ -133,8 +133,9 @@ def _open_subscription(db: Session, client_id: int, company_id: int) -> Subscrip
 
 
 def _apply_coupon(db: Session, client_id: int, company_id: int, code: str | None, price: Decimal) -> tuple[Coupon | None, Decimal]:
-    if not code:
-        return None, price
+    full_price = quantize_money(Decimal(price))
+    if not code or not code.strip():
+        return None, full_price
     coupon = db.scalar(select(Coupon).where(Coupon.company_id == company_id, Coupon.code == code.strip().upper()))
     if coupon is None:
         raise AppError(400, "invalid_coupon", "الكوبون غير صالح لهذه الشركة")
@@ -151,8 +152,8 @@ def _apply_coupon(db: Session, client_id: int, company_id: int, code: str | None
         total_uses = int(db.scalar(select(func.count()).select_from(CouponRedemption).where(CouponRedemption.coupon_id == coupon.id)) or 0)
         if total_uses >= limit:
             raise AppError(400, "coupon_exhausted", "استُنفد عدد استخدامات الكوبون")
-    amount = quantize_money(max(Decimal("0"), price - coupon.discount_amount))
-    return coupon, amount
+    discount = min(quantize_money(Decimal(coupon.discount_amount)), full_price)
+    return coupon, quantize_money(full_price - discount)
 
 
 def _next_invoice_number(db: Session) -> int:
@@ -190,9 +191,10 @@ def _charge(
     pay_with_wallet: bool = False,
 ) -> PurchaseResult:
     if pay_with_wallet:
-        from backend.wallets.services import debit
+        if amount > 0:
+            from backend.wallets.services import debit
 
-        debit(db, client.id, amount, note=package.name)
+            debit(db, client.id, amount, note=package.name)
         simulated_outcome = "success"
     provider = get_payment_provider()
     if not pay_with_wallet and provider.name == "mock" and simulated_outcome not in {"success", "failure"}:
@@ -294,7 +296,7 @@ def _charge(
         payment_status="succeeded",
         subscription=_to_out(db, subscription),
         invoice=_invoice_out(invoice),
-        message="تم الشراء بنجاح",
+        message="تم الشراء بنجاح. غطى الكوبون قيمة الاشتراك ولم يُخصم من المحفظة" if coupon is not None and amount == 0 else "تم الشراء بنجاح",
     )
 
 

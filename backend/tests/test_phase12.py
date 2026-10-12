@@ -41,6 +41,17 @@ def test_client_registers_and_role_cannot_escalate(client: TestClient):
         json={"full_name": "أ", "city": "عدن", "phone": "777", "email": "a@eshtrakei.local", "password": "short"},
     )
     assert short.status_code == 422
+    letters = client.post(
+        "/api/auth/register",
+        json={"full_name": "أ", "city": "عدن", "phone": "777", "email": "letters@eshtrakei.local", "password": "abcdefgh"},
+    )
+    digits = client.post(
+        "/api/auth/register",
+        json={"full_name": "أ", "city": "عدن", "phone": "777", "email": "digits@eshtrakei.local", "password": "12345678"},
+    )
+    assert letters.status_code == 422
+    assert digits.status_code == 422
+    assert "حروف" in letters.json()["message"]
 
 
 def test_join_approve_manager_stop_and_ads(client: TestClient):

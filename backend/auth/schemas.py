@@ -1,6 +1,11 @@
-from pydantic import BaseModel, Field
+from typing import Annotated
 
+from pydantic import AfterValidator, BaseModel, Field
+
+from backend._core.security import assert_strong_password
 from backend.enums import UserRole
+
+PasswordStr = Annotated[str, AfterValidator(assert_strong_password)]
 
 
 class LoginRequest(BaseModel):
@@ -13,7 +18,7 @@ class RegisterRequest(BaseModel):
     city: str = Field(min_length=1, max_length=120)
     phone: str = Field(min_length=1, max_length=30)
     email: str = Field(min_length=3, max_length=320)
-    password: str = Field(min_length=8, max_length=128)
+    password: PasswordStr
 
 
 class AuthResponse(BaseModel):
@@ -30,7 +35,7 @@ class ProfileUpdate(BaseModel):
 
 class PasswordUpdate(BaseModel):
     current_password: str
-    new_password: str = Field(min_length=8, max_length=128)
+    new_password: PasswordStr
 
 
 class MeResponse(BaseModel):

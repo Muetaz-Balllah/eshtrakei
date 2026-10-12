@@ -4,7 +4,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { RoleShell } from "@/components/shell/role-shell";
 import { cardClass, dangerButton, fieldClass, ghostButton, Notice, primaryButton } from "@/components/ui/ui";
-import { apiFetch, authHeaders } from "@/lib/api";
+import { apiFetch, authHeaders, newIdempotencyKey } from "@/lib/api";
 import { ar } from "@/messages/ar";
 
 export default function CheckoutPage() {
@@ -33,8 +33,8 @@ export default function CheckoutPage() {
       body: JSON.stringify({
         company_id: Number(search.get("company")),
         package_id: Number(params.packageId),
-        coupon_code: coupon || null,
-        idempotency_key: crypto.randomUUID(),
+        coupon_code: coupon.trim() || null,
+        idempotency_key: newIdempotencyKey(),
         simulated_outcome: outcome === "wallet" ? "success" : outcome,
         pay_with_wallet: outcome === "wallet",
       }),

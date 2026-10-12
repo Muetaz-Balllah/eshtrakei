@@ -9,7 +9,6 @@ __pycache__/
 .ruff_cache/
 .coverage
 htmlcov/
-backend/coverage/
 
 # Local database and uploaded files
 *.db
@@ -23,6 +22,12 @@ backend/.env
 frontend/.env
 frontend/.env.local
 !**/.env.example
+
+# Local trial logins. This file contains passwords.
+DEMO-ACCOUNTS.md
+
+# Screenshots taken while checking the app
+.shot/
 
 # Node / Next.js
 node_modules/

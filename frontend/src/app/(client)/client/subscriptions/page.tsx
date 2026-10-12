@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { RoleShell } from "@/components/shell/role-shell";
 import { Badge, cardClass, Icon, navyButton, Notice } from "@/components/ui/ui";
-import { apiFetch, authHeaders } from "@/lib/api";
+import { apiFetch, authHeaders, newIdempotencyKey } from "@/lib/api";
 import { ar } from "@/messages/ar";
 
 type Sub = {
@@ -37,7 +37,7 @@ export default function SubscriptionsPage() {
     const response = await apiFetch(`/api/subscriptions/${id}/renew`, {
       method: "POST",
       headers: { ...authHeaders(), "Content-Type": "application/json" },
-      body: JSON.stringify({ idempotency_key: crypto.randomUUID(), simulated_outcome: "success" }),
+      body: JSON.stringify({ idempotency_key: newIdempotencyKey(), simulated_outcome: "success" }),
     });
     const body = await response.json();
     setNotice(response.ok && body.payment_status === "succeeded" ? `${ar.purchaseOk} — ${ar.invoiceNo} ${body.invoice.invoice_number}` : body.message);

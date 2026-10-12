@@ -108,3 +108,46 @@ def test_packages_coupons_purchase_and_renewal(client: TestClient):
     clients = client.get("/api/company/clients", headers=manager)
     assert clients.json()[0]["email"] == "buyer@eshtrakei.local"
     assert client.get("/api/company/clients", headers=other).json() == []
+
+
+def test_coupon_larger_than_subscription_charges_nothing(client: TestClient):
+    manager, company_id = _company(client, "شركة الخصم", "discount@eshtrakei.local")
+    created = client.post(
+        "/api/company/packages",
+        headers=manager,
+        json={"name": "باقة صغيرة", "price": "40.00", "duration_amount": 7, "duration_unit": "days", "data_gb": 10, "speed_mbps": 8},
+    )
+    package_id = created.json()["id"]
+    expires = (datetime.now(UTC) + timedelta(days=2)).isoformat()
+    coupon = client.post(
+        "/api/company/coupons",
+        headers=manager,
+        json={"code": "big", "discount_amount": "100.00", "expires_at": expires},
+    )
+    assert coupon.status_code == 200, coupon.text
+
+    buyer = client.post(
+        "/api/auth/register",
+        json={"full_name": "زبون الخصم", "city": "طرابلس", "phone": "091111", "email": "discount-buyer@eshtrakei.local", "password": "password1"},
+    )
+    headers = {"Authorization": f"Bearer {buyer.json()['access_token']}"}
+    topped = client.post("/api/wallet/topups", headers=headers, json={"amount": "12.00", "simulated_outcome": "success"})
+    assert topped.status_code == 200, topped.text
+
+    bought = client.post(
+        "/api/subscriptions/purchases",
+        headers=headers,
+        json={"company_id": company_id, "package_id": package_id, "coupon_code": "  big  ", "idempotency_key": "big-coupon-0001", "pay_with_wallet": True},
+    )
+    assert bought.status_code == 200, bought.text
+    assert bought.json()["payment_status"] == "succeeded"
+    assert bought.json()["invoice"]["amount_paid"] == "0.00"
+    wallet = client.get("/api/wallet", headers=headers)
+    assert wallet.json()["balance"] == "12.00"
+
+    reused = client.post(
+        "/api/subscriptions/purchases",
+        headers=headers,
+        json={"company_id": company_id, "package_id": package_id, "coupon_code": "BIG", "idempotency_key": "big-coupon-0002", "pay_with_wallet": True},
+    )
+    assert reused.status_code == 409

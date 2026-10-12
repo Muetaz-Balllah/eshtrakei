@@ -76,5 +76,10 @@ def test_pdf_notices_and_complaints(client: TestClient, caplog):
         json={"kind": "technical_support", "target": "platform", "message": "الدخول بطيء"},
     )
     assert client.get("/api/company/complaints", headers=manager).json()[0]["id"] == complaint_id
+    admin_rows = client.get("/api/admin/complaints", headers=admin).json()
+    admin_ids = {row["id"] for row in admin_rows}
+    assert complaint_id not in admin_ids
+    assert platform.json()["id"] in admin_ids
+    assert all(row["target"] == "platform" for row in admin_rows)
     assert client.post(f"/api/admin/complaints/{platform.json()['id']}/reply", headers=admin, json={"message": "تم الاستلام"}).status_code == 200
     assert client.post(f"/api/company/complaints/{platform.json()['id']}/reply", headers=manager, json={"message": "لا"}).status_code == 404

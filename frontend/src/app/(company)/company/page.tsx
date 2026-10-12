@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { RoleShell } from "@/components/shell/role-shell";
 import { cardClass, Icon } from "@/components/ui/ui";
 import { apiFetch, apiUrl, authHeaders } from "@/lib/api";
+import { couponExhausted, couponExpired, formatCouponDate } from "@/lib/coupons";
 import { ar } from "@/messages/ar";
 
 type Company = { name: string; description: string; phone: string; balance?: string };
@@ -152,7 +153,7 @@ export default function CompanyHomePage() {
       {report ? (
         <section className="flex flex-col gap-3">
           <h3 className="px-1 text-lg font-extrabold">{ar.financialKpis}</h3>
-          <article className="relative overflow-hidden rounded-3xl bg-secondary p-5 text-on-secondary shadow-[0_12px_28px_rgba(30,58,95,0.15)]">
+          <article className="relative overflow-hidden rounded-3xl bg-secondary p-5 text-on-secondary shadow-[0_12px_28px_rgba(30,58,95,0.15)] dark:bg-surface-container dark:text-on-surface">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-sm text-secondary-fixed">{ar.netShare}</p>
@@ -337,21 +338,26 @@ export default function CompanyHomePage() {
           </div>
           <Link href="/company/coupons" className="text-sm font-bold text-primary">+ {ar.newCode}</Link>
         </div>
-        {coupons.slice(0, 3).map((coupon) => {
+        {coupons.map((coupon) => {
           const limit = coupon.max_total_uses ?? coupon.max_uses;
+          const expired = couponExpired(coupon.expires_at);
+          const exhausted = couponExhausted(coupon.redemption_count, limit);
           const width = limit ? Math.min(100, Math.round((coupon.redemption_count / limit) * 100)) : 0;
+          const status = expired ? ar.couponExpired : exhausted ? ar.couponExhausted : ar.active;
           return (
-            <div key={coupon.id} className="flex flex-col gap-2 rounded-2xl bg-surface-low p-3.5">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
+            <div key={coupon.id} className={`flex flex-col gap-2 rounded-2xl bg-surface-low p-3.5 ${expired ? "ring-2 ring-error" : ""}`}>
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex min-w-0 flex-wrap items-center gap-2">
                   <span dir="ltr" className="rounded-lg bg-surface-lowest px-2.5 py-1 font-extrabold tracking-widest shadow-sm">{coupon.code}</span>
                   <span className="rounded-full bg-tertiary/15 px-2 py-0.5 text-xs font-bold text-tertiary">{coupon.discount_amount} {ar.currency}</span>
+                  <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${expired || exhausted ? "bg-error-container text-error" : "bg-tertiary/15 text-tertiary"}`}>{status}</span>
                 </div>
-                <button type="button" className="text-xs font-bold text-error" onClick={() => removeCoupon(coupon.id)}>{ar.remove}</button>
-                <span className="inline-flex items-center gap-1 text-xs text-secondary">
-                  <Icon name="timer" className="text-[14px]" />
-                  {limit ? `${ar.remainingUses} ${Math.max(limit - coupon.redemption_count, 0)}` : `${ar.usedTimes}: ${coupon.redemption_count}`}
-                </span>
+                <button type="button" className="shrink-0 text-xs font-bold text-error" onClick={() => removeCoupon(coupon.id)}>{ar.remove}</button>
+              </div>
+              <div className="grid grid-cols-1 gap-1 text-xs text-secondary sm:grid-cols-2">
+                <span className={expired ? "font-bold text-error" : ""}>{ar.expires}: {formatCouponDate(coupon.expires_at)}</span>
+                <span>{ar.usedTimes}: {coupon.redemption_count}{limit ? ` / ${limit}` : ""}</span>
+                <span>{ar.remainingUses}: {limit === null ? ar.noUseLimit : Math.max(limit - coupon.redemption_count, 0)}</span>
               </div>
               {limit ? (
                 <div className="h-1.5 overflow-hidden rounded-full bg-surface-container">

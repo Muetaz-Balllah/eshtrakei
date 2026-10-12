@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { RoleShell } from "@/components/shell/role-shell";
 import { cardClass, fieldClass, ghostButton, Icon, Notice, primaryButton } from "@/components/ui/ui";
 import { apiFetch, apiUrl, authHeaders } from "@/lib/api";
+import { passwordIsStrong } from "@/lib/password";
 import { ar } from "@/messages/ar";
 
 type Company = { id: number; name: string; description: string; status: string; phone: string; has_manager: boolean };
@@ -67,6 +68,14 @@ export default function AdminCompaniesPage() {
   async function createManager(event: FormEvent<HTMLFormElement>, companyId: number) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
+    if (String(form.get("password") ?? "") !== String(form.get("confirm_password") ?? "")) {
+      setNotice(ar.passwordMismatch);
+      return;
+    }
+    if (!passwordIsStrong(String(form.get("password") ?? ""))) {
+      setNotice(ar.passwordHint);
+      return;
+    }
     const response = await fetch(apiUrl(`/api/admin/companies/${companyId}/manager`), {
       method: "POST",
       headers: { ...authHeaders(), "Content-Type": "application/json" },
@@ -76,7 +85,8 @@ export default function AdminCompaniesPage() {
         password: form.get("password"),
       }),
     });
-    if (response.ok) setNotice(ar.managerCreated);
+    const body = await response.json().catch(() => ({}));
+    setNotice(response.ok ? ar.managerCreated : body.message ?? ar.passwordHint);
     await reload();
   }
 
@@ -259,7 +269,8 @@ export default function AdminCompaniesPage() {
                 <form className="grid gap-2 md:grid-cols-2" onSubmit={(event) => createManager(event, company.id)}>
                   <input name="full_name" required placeholder={ar.fullName} className={fieldClass} />
                   <input name="email" required type="email" placeholder={ar.email} className={fieldClass} />
-                  <input name="password" required minLength={8} type="password" placeholder={ar.password} className={fieldClass} />
+                  <input name="password" required minLength={8} type="password" placeholder={ar.passwordHint} className={fieldClass} />
+                  <input name="confirm_password" required type="password" placeholder={ar.confirmPassword} className={fieldClass} />
                   <button type="submit" className={primaryButton}>{ar.createManager}</button>
                 </form>
               ) : null}

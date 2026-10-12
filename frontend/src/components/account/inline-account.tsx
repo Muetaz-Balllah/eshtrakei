@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { fieldClass, Icon, Notice, primaryButton } from "@/components/ui/ui";
 import { apiFetch, apiUrl, authHeaders } from "@/lib/api";
+import { passwordIsStrong } from "@/lib/password";
 import { ar } from "@/messages/ar";
 
 type Me = { full_name: string; phone: string | null; avatar_url: string | null };
@@ -63,6 +64,14 @@ export function InlineAccount() {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
+    if (String(data.get("new_password") ?? "") !== String(data.get("confirm_password") ?? "")) {
+      setNotice(ar.passwordMismatch);
+      return;
+    }
+    if (!passwordIsStrong(String(data.get("new_password") ?? ""))) {
+      setNotice(ar.passwordHint);
+      return;
+    }
     const response = await apiFetch("/api/auth/password", {
       method: "POST",
       headers: { ...authHeaders(), "Content-Type": "application/json" },
@@ -115,6 +124,8 @@ export function InlineAccount() {
         <form onSubmit={savePassword} className="mx-3 mb-3 flex flex-col gap-2 rounded-2xl bg-surface-low p-3">
           <input name="current_password" required type="password" placeholder={ar.currentPassword} className={fieldClass} />
           <input name="new_password" required minLength={8} type="password" placeholder={ar.newPassword} className={fieldClass} />
+          <input name="confirm_password" required type="password" placeholder={ar.confirmPassword} className={fieldClass} />
+          <p className="text-xs font-medium text-secondary">{ar.passwordHint}</p>
           <button className={`${primaryButton} w-fit transition hover:opacity-90`} type="submit">{ar.changePassword}</button>
         </form>
       ) : null}

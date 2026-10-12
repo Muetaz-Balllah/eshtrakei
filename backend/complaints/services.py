@@ -84,7 +84,7 @@ def list_support(db: Session, company_id: int) -> list[ComplaintOut]:
 
 
 def list_for_platform(db: Session) -> list[ComplaintOut]:
-    rows = db.scalars(select(Complaint).order_by(Complaint.created_at.desc()))
+    rows = db.scalars(select(Complaint).where(Complaint.target == "platform").order_by(Complaint.created_at.desc()))
     return [_out(db, row) for row in rows]
 
 
@@ -93,6 +93,8 @@ def reply(db: Session, complaint_id: int, user_id: int, body: ReplyBody, company
     if row is None:
         raise AppError(404, "not_found", "الشكوى غير موجودة")
     if company_id is not None and (row.target != "company" or row.company_id != company_id):
+        raise AppError(404, "not_found", "الشكوى غير موجودة")
+    if company_id is None and row.target != "platform":
         raise AppError(404, "not_found", "الشكوى غير موجودة")
     row.reply_message = body.message.strip()
     row.replied_by = user_id

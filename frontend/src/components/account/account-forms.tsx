@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { cardClass, fieldClass, Notice, primaryButton } from "@/components/ui/ui";
 import { apiFetch, authHeaders } from "@/lib/api";
+import { passwordIsStrong } from "@/lib/password";
 import { ar } from "@/messages/ar";
 
 type Me = { full_name: string; city: string | null; phone: string | null; email: string };
@@ -34,6 +35,14 @@ export function AccountForms() {
     event.preventDefault();
     const formElement = event.currentTarget;
     const form = new FormData(formElement);
+    if (String(form.get("new_password") ?? "") !== String(form.get("confirm_password") ?? "")) {
+      setNotice(ar.passwordMismatch);
+      return;
+    }
+    if (!passwordIsStrong(String(form.get("new_password") ?? ""))) {
+      setNotice(ar.passwordHint);
+      return;
+    }
     const response = await apiFetch("/api/auth/password", {
       method: "POST",
       headers: { ...authHeaders(), "Content-Type": "application/json" },
@@ -60,6 +69,8 @@ export function AccountForms() {
         <h2 className="font-extrabold">{ar.changePassword}</h2>
         <input name="current_password" required type="password" placeholder={ar.currentPassword} className={fieldClass} />
         <input name="new_password" required minLength={8} type="password" placeholder={ar.newPassword} className={fieldClass} />
+        <input name="confirm_password" required type="password" placeholder={ar.confirmPassword} className={fieldClass} />
+        <p className="text-xs font-medium text-secondary">{ar.passwordHint}</p>
         <button className={`${primaryButton} w-fit`} type="submit">{ar.changePassword}</button>
       </form>
       {notice ? <Notice>{notice}</Notice> : null}

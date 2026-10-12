@@ -1,10 +1,22 @@
 from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
+import re
+
 import bcrypt
 import jwt
 
 from backend.config import get_settings
+
+_LETTER = re.compile(r"[A-Za-z\u0600-\u06FF]")
+_DIGIT = re.compile(r"\d")
+PASSWORD_RULE_MESSAGE = "كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حروف وأرقام"
+
+
+def assert_strong_password(password: str) -> str:
+    if not (8 <= len(password) <= 128 and _LETTER.search(password) and _DIGIT.search(password)):
+        raise ValueError(PASSWORD_RULE_MESSAGE)
+    return password
 
 
 def hash_password(password: str) -> str:

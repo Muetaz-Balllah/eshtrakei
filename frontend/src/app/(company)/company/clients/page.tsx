@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { RoleShell } from "@/components/shell/role-shell";
 import { Badge, cardClass, ghostButton, Icon } from "@/components/ui/ui";
-import { apiFetch, authHeaders } from "@/lib/api";
+import { apiFetch, authHeaders, newIdempotencyKey } from "@/lib/api";
 import { ar } from "@/messages/ar";
 
 type Sub = { id: number; package_name: string; status: string; start_date: string; end_date: string; days_remaining: number };
@@ -25,7 +25,7 @@ export default function CompanyClientsPage() {
     await apiFetch(`/api/company/subscriptions/${id}/renew`, {
       method: "POST",
       headers: { ...authHeaders(), "Content-Type": "application/json" },
-      body: JSON.stringify({ idempotency_key: crypto.randomUUID(), simulated_outcome: "success" }),
+      body: JSON.stringify({ idempotency_key: newIdempotencyKey(), simulated_outcome: "success" }),
     });
     const response = await apiFetch("/api/company/clients", { headers: authHeaders() });
     setRows(await response.json());
