@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { CoverageMap, MapTower } from "@/components/map/coverage-map";
 import { RoleShell } from "@/components/shell/role-shell";
@@ -11,7 +11,7 @@ import { ar } from "@/messages/ar";
 type Company = { id: number; name: string };
 type Tower = MapTower & { company_id: number };
 
-export default function ClientCoveragePage() {
+function ClientCoverageContent() {
   const search = useSearchParams();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [towers, setTowers] = useState<Tower[]>([]);
@@ -62,5 +62,13 @@ export default function ClientCoveragePage() {
         ))}
       </div>
     </RoleShell>
+  );
+}
+
+export default function ClientCoveragePage() {
+  return (
+    <Suspense fallback={<RoleShell role="client" title={ar.coverage}><p className="text-sm text-secondary">...</p></RoleShell>}>
+      <ClientCoverageContent />
+    </Suspense>
   );
 }

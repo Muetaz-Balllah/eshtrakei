@@ -1,13 +1,13 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
-import { useState } from "react";
 import { RoleShell } from "@/components/shell/role-shell";
 import { cardClass, dangerButton, fieldClass, ghostButton, Notice, primaryButton } from "@/components/ui/ui";
 import { apiFetch, authHeaders, newIdempotencyKey } from "@/lib/api";
 import { ar } from "@/messages/ar";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const params = useParams<{ packageId: string }>();
   const search = useSearchParams();
   const [coupon, setCoupon] = useState("");
@@ -72,5 +72,13 @@ export default function CheckoutPage() {
         ) : null}
       </section>
     </RoleShell>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<RoleShell role="client" title={ar.buy}><p className="text-sm text-secondary">...</p></RoleShell>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }
