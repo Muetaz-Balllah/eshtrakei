@@ -4,11 +4,12 @@ from pathlib import Path
 from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from redis.exceptions import RedisError
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from backend._core.object_storage import get_object, object_storage_enabled
 from backend._core.redis_client import get_redis
 from backend.banners.routes import router as banners_router
 from backend.coverage.routes import router as coverage_router
@@ -73,13 +74,18 @@ def create_app() -> FastAPI:
     app.include_router(coverage_router)
 
     @app.get("/api/media/{folder}/{filename}")
-    def media(folder: str, filename: str) -> FileResponse:
+    def media(folder: str, filename: str) -> Response:
         if folder not in {"logos", "banners", "avatars"} or "/" in filename or "\\" in filename or ".." in filename:
             raise AppError(404, "not_found", "الملف غير موجود")
         path = Path("backend/storage") / folder / filename
-        if not path.is_file():
-            raise AppError(404, "not_found", "الملف غير موجود")
-        return FileResponse(path)
+        if path.is_file():
+            return FileResponse(path)
+        if object_storage_enabled():
+            content = get_object(f"{folder}/{filename}")
+            if content is not None:
+                media_type = {".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp"}.get(path.suffix, "application/octet-stream")
+                return Response(content, media_type=media_type)
+        raise AppError(404, "not_found", "الملف غير موجود")
 
     @app.get("/api/health")
     def health(db: Session = Depends(get_db)) -> dict:

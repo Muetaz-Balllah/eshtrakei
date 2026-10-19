@@ -8,6 +8,7 @@ from bidi.algorithm import get_display
 from fpdf import FPDF
 from sqlalchemy.orm import Session
 
+from backend._core.object_storage import object_storage_enabled, put_object, read_bytes
 from backend.config import get_settings
 from backend.errors import AppError
 from backend.invoices.models import Invoice
@@ -68,10 +69,6 @@ def _money(invoice: Invoice) -> str:
 
 
 def render_invoice_pdf(invoice: Invoice) -> str:
-    settings = get_settings()
-    target_dir = Path(settings.invoice_storage_dir)
-    target_dir.mkdir(parents=True, exist_ok=True)
-    path = target_dir / f"invoice-{invoice.invoice_number}.pdf"
     pdf = FPDF(format="A4", unit="mm")
     pdf.set_auto_page_break(auto=False)
     pdf.add_page()
@@ -124,7 +121,17 @@ def render_invoice_pdf(invoice: Invoice) -> str:
     pdf.set_draw_color(*LINE)
     pdf.line(14, 268, 196, 268)
     _place(pdf, 14, 274, 182, "صادرة إلكترونياً من منصة اشتراكي، ولا تحتاج إلى توقيع.", 10, MUTED, right=True)
-    pdf.output(str(path))
+    content = bytes(pdf.output())
+    filename = f"invoice-{invoice.invoice_number}.pdf"
+    if object_storage_enabled():
+        key = f"invoices/{filename}"
+        put_object(key, content, "application/pdf")
+        return key
+    settings = get_settings()
+    target_dir = Path(settings.invoice_storage_dir)
+    target_dir.mkdir(parents=True, exist_ok=True)
+    path = target_dir / filename
+    path.write_bytes(content)
     return str(path)
 
 
@@ -150,7 +157,7 @@ def deliver_invoice(db: Session, invoice: Invoice) -> None:
         logger.exception("purchase email failed for %s", invoice.id)
 
 
-def invoice_file(db: Session, invoice_id: int, client_id: int | None, company_id: int | None) -> Path:
+def invoice_pdf(db: Session, invoice_id: int, client_id: int | None, company_id: int | None) -> tuple[bytes, str]:
     row = db.get(Invoice, invoice_id)
     if row is None:
         raise AppError(404, "not_found", "الفاتورة غير موجودة")
@@ -158,6 +165,9 @@ def invoice_file(db: Session, invoice_id: int, client_id: int | None, company_id
         raise AppError(404, "not_found", "الفاتورة غير موجودة")
     if company_id is not None and row.company_id != company_id:
         raise AppError(404, "not_found", "الفاتورة غير موجودة")
-    if not row.pdf_path or not Path(row.pdf_path).is_file():
+    if not row.pdf_path:
         raise AppError(404, "not_found", "ملف الفاتورة غير متوفر")
-    return Path(row.pdf_path)
+    content = read_bytes(row.pdf_path)
+    if content is None:
+        raise AppError(404, "not_found", "ملف الفاتورة غير متوفر")
+    return content, Path(row.pdf_path).name

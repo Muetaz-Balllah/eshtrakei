@@ -6,6 +6,7 @@ from fastapi import UploadFile
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from backend._core.object_storage import object_storage_enabled, put_object
 from backend._core.security import hash_password
 from backend.auth.models import User
 from backend.companies.models import Company, CompanyJoinRequest, CompanyManager
@@ -31,14 +32,18 @@ async def save_image(upload: UploadFile | None, folder: str) -> str | None:
     ext = ALLOWED_IMAGE_TYPES.get(upload.content_type or "")
     if ext is None:
         raise AppError(400, "invalid_image", "صيغة الشعار يجب أن تكون PNG أو JPG أو WEBP")
-    target_dir = STORAGE / folder
-    target_dir.mkdir(parents=True, exist_ok=True)
     name = f"{uuid4().hex}{ext}"
     content = await upload.read()
     if len(content) > 2_000_000:
         raise AppError(400, "image_too_large", "حجم الصورة أكبر من الحد المسموح")
+    key = f"{folder}/{name}"
+    if object_storage_enabled():
+        put_object(key, content, upload.content_type or "application/octet-stream")
+        return key
+    target_dir = STORAGE / folder
+    target_dir.mkdir(parents=True, exist_ok=True)
     (target_dir / name).write_bytes(content)
-    return f"{folder}/{name}"
+    return key
 
 
 def to_public(company: Company) -> CompanyPublic:

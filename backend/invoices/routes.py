@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from fastapi.responses import FileResponse
+from fastapi.responses import Response
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -8,7 +8,7 @@ from backend.db import get_db
 from backend.enums import UserRole
 from backend.errors import AppError
 from backend.invoices.models import Invoice
-from backend.invoices.services import invoice_file
+from backend.invoices.services import invoice_pdf
 from backend.subscriptions.schemas import InvoiceOut
 
 router = APIRouter(tags=["invoices"])
@@ -66,9 +66,9 @@ def subscription_invoices(
 @router.get("/api/invoices/{invoice_id}/pdf")
 def download_pdf(invoice_id: int, principal: Principal = Depends(get_current_principal), db: Session = Depends(get_db)):
     if principal.user.role == UserRole.client:
-        path = invoice_file(db, invoice_id, principal.user.id, None)
+        content, filename = invoice_pdf(db, invoice_id, principal.user.id, None)
     elif principal.user.role == UserRole.company_manager:
-        path = invoice_file(db, invoice_id, None, principal.company_id)
+        content, filename = invoice_pdf(db, invoice_id, None, principal.company_id)
     else:
         raise AppError(403, "forbidden", "ليست لديك صلاحية لهذا الإجراء")
-    return FileResponse(path, media_type="application/pdf", filename=path.name)
+    return Response(content, media_type="application/pdf", headers={"Content-Disposition": f'attachment; filename="{filename}"'})
