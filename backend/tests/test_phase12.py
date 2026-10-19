@@ -100,17 +100,11 @@ def test_join_approve_manager_stop_and_ads(client: TestClient):
     me = client.get("/api/company/me", headers=manager)
     assert me.status_code == 200
     assert me.json()["name"] == "شركة النور"
-    ad = client.post("/api/company/advertisements", headers=manager, data={"title": "عرض الصيف", "body": "خصم"})
-    assert ad.status_code == 200
-    home = client.get("/api/advertisements", headers=client_headers)
-    assert any(row["title"] == "عرض الصيف" for row in home.json())
 
     stopped = client.post(f"/api/admin/companies/{company_id}/stop", headers=admin)
     assert stopped.json()["status"] == "stopped"
     hidden = client.get("/api/companies", headers=client_headers)
     assert all(row["name"] != "شركة النور" for row in hidden.json())
-    ads = client.get("/api/advertisements", headers=client_headers)
-    assert all(row["title"] != "عرض الصيف" for row in ads.json())
     blocked = client.post("/api/auth/login", json={"email": "layla@eshtrakei.local", "password": "password1"})
     assert blocked.status_code == 403
 

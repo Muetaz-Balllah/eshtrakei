@@ -5,7 +5,6 @@ from sqlalchemy import engine_from_config, pool
 
 from backend.config import get_settings
 from backend.db import Base
-from backend.advertisements import models as advertisement_models  # noqa: F401
 from backend.auth import models as auth_models  # noqa: F401
 from backend.companies import models as company_models  # noqa: F401
 from backend.complaints import models as complaint_models  # noqa: F401

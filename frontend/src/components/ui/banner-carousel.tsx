@@ -53,16 +53,18 @@ export function BannerCarousel({ banners }: { banners: PromoBanner[] }) {
         setDragX(0);
       }}
     >
-      <div className={`absolute inset-0 ${dragging ? "" : "transition-transform duration-500 ease-out"}`} style={{ transform: `translateX(${dragX}px)` }}>
-        {banner.image_url ? <img src={apiUrl(banner.image_url)} alt="" className="absolute inset-0 h-full w-full object-cover" /> : <div className="absolute inset-0 bg-[#101826]" />}
-        <div className="absolute inset-0 bg-gradient-to-l from-[#07111c]/92 via-[#07111c]/75 to-transparent" />
-        <div className="relative flex min-h-44 flex-col justify-between p-5">
-          <span className="w-fit rounded-full bg-primary-container px-2.5 py-1 text-xs font-bold">{ar.ads}</span>
-          <div>
-            <h2 className="text-2xl font-extrabold">{banner.title}</h2>
-            <p className="mt-1 max-w-xl text-sm text-white/85">{banner.body}</p>
+      <div className={dragging ? "" : "transition-transform duration-500 ease-out"} style={{ transform: `translateX(${dragX}px)` }}>
+        {banner.image_url ? (
+          <img src={apiUrl(banner.image_url)} alt={banner.title} className="block h-auto w-full" />
+        ) : (
+          <div className="relative flex min-h-44 flex-col justify-between bg-[#101826] p-5">
+            <span className="w-fit rounded-full bg-primary-container px-2.5 py-1 text-xs font-bold">{ar.ads}</span>
+            <div>
+              <h2 className="text-2xl font-extrabold">{banner.title}</h2>
+              <p className="mt-1 max-w-xl text-sm text-white/85">{banner.body}</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       {count > 1 ? (
         <div className="absolute bottom-3 start-5 z-10 flex gap-1.5">

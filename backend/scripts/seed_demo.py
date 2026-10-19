@@ -4,18 +4,19 @@ Safe to run more than once: if the demo client already exists, it leaves the dat
 Existing accounts outside @demo.eshtrakei.local are kept.
 """
 
+import shutil
 from datetime import timedelta
 from decimal import Decimal
+from pathlib import Path
 
 from sqlalchemy import select
 
 from backend._core.security import hash_password
-from backend.advertisements.models import Advertisement
 from backend.auth.models import User
 from backend.banners.models import PlatformBanner
 from backend.banners.services import approve_banner, reject_banner
 from backend.companies.models import Company, CompanyJoinRequest
-from backend.companies.services import create_manager, stop_company
+from backend.companies.services import create_manager
 from backend.complaints.schemas import ComplaintCreate, ReplyBody
 from backend.complaints.services import create_complaint, create_support, reply
 from backend.config import get_settings
@@ -43,7 +44,23 @@ from backend.utils import libya_today, utc_now
 from backend.wallets.services import top_up
 
 PASSWORD = "Demo1234"
-MARKER = "ahmad@demo.eshtrakei.local"
+MARKER = "abdelsamad@demo.eshtrakei.local"
+ROOT = Path(__file__).resolve().parents[2]
+PEOPLE_DIR = ROOT / "people"
+AVATARS = {
+    "sara@demo.eshtrakei.local": "random-person (3).jpeg",
+    "omar@demo.eshtrakei.local": "random-person (1).jpeg",
+    "huda@demo.eshtrakei.local": "random-person (4).jpeg",
+    "khaled@demo.eshtrakei.local": "random-person (10).jpeg",
+    "laila@demo.eshtrakei.local": "random-person (8).jpeg",
+    "yousef.mgr@demo.eshtrakei.local": "random-person (5).jpeg",
+    "mariam.mgr@demo.eshtrakei.local": "random-person (11).jpeg",
+    "abdelsamad@demo.eshtrakei.local": "random-person (7).jpeg",
+    "muaath@demo.eshtrakei.local": "random-person (2).jpeg",
+    "salem@demo.eshtrakei.local": "random-person.jpeg",
+    "yousef@demo.eshtrakei.local": "random-person (6).jpeg",
+    "mariam@demo.eshtrakei.local": "random-person (9).jpeg",
+}
 
 
 def _user(db, email: str) -> User:
@@ -51,6 +68,20 @@ def _user(db, email: str) -> User:
     if row is None:
         raise SystemExit(f"missing user {email}")
     return row
+
+
+def _assign_avatars(db) -> None:
+    dest_dir = ROOT / "backend" / "storage" / "avatars"
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    for email, filename in AVATARS.items():
+        source = PEOPLE_DIR / filename
+        if not source.is_file():
+            raise SystemExit(f"missing portrait {source}")
+        user = _user(db, email)
+        dest_name = f"user-{user.id}.jpg"
+        shutil.copyfile(source, dest_dir / dest_name)
+        user.avatar_path = f"avatars/{dest_name}"
+    db.commit()
 
 
 def _package(db, company_id: int, name: str) -> Package:
@@ -166,13 +197,16 @@ def seed_demo() -> None:
         today = libya_today()
 
         specs = [
-            ("libyana", "ليبيانا المنزلية", "إنترنت منزلي في طرابلس وما حولها، مع باقات يومية وشهرية.", "0912001100", "500.00", "سارة التومي", "sara@demo.eshtrakei.local", "طرابلس", "0912001101", False),
-            ("madar", "مدار فايبر", "ألياف بصرية في بنغازي للمنازل والمحلات.", "0923002200", "400.00", "عمر البكوش", "omar@demo.eshtrakei.local", "بنغازي", "0923002201", False),
-            ("naher", "النهر نت", "تغطية لاسلكية في مصراتة والخمس وزليتن.", "0914003300", "600.00", "هدى الشريف", "huda@demo.eshtrakei.local", "مصراتة", "0914003301", False),
-            ("wahat", "واحة سبها", "شركة موقوفة للتجربة. حساب مديرها لا يستطيع تسجيل الدخول.", "0915004400", "200.00", "خالد المبروك", "khaled@demo.eshtrakei.local", "سبها", "0915004401", True),
+            ("jeel", "جيل نت", "إنترنت منزلي في طرابلس وما حولها، مع باقات يومية وشهرية.", "0912001100", "500.00", "سارة التومي", "sara@demo.eshtrakei.local", "طرابلس", "0912001101"),
+            ("awal", "أوال نت", "ألياف بصرية في بنغازي للمنازل والمحلات.", "0923002200", "400.00", "عمر البكوش", "omar@demo.eshtrakei.local", "بنغازي", "0923002201"),
+            ("giga", "جيجا", "تغطية لاسلكية في مصراتة والخمس وزليتن.", "0914003300", "600.00", "هدى الشريف", "huda@demo.eshtrakei.local", "مصراتة", "0914003301"),
+            ("ion", "أيون", "خدمة لاسلكية في الزاوية وصبراتة وصرمان.", "0925005500", "350.00", "خالد المبروك", "khaled@demo.eshtrakei.local", "الزاوية", "0925005501"),
+            ("abraj", "أبراج ليبيا", "أبراج تغطية في طرابلس وتاجوراء وجنزور.", "0916006600", "700.00", "ليلى بن موسى", "laila@demo.eshtrakei.local", "طرابلس", "0916006601"),
+            ("hadatha", "الحداثة نت", "باقات منزلية وأعمال في الخمس وزليتن.", "0917007700", "450.00", "يوسف الحداد", "yousef.mgr@demo.eshtrakei.local", "الخمس", "0917007701"),
+            ("ozone", "أوزون", "إنترنت في سبها ومرزق وأوباري.", "0918008800", "250.00", "مريم السنوسي", "mariam.mgr@demo.eshtrakei.local", "سبها", "0918008801"),
         ]
         companies: dict[str, Company] = {}
-        for key, name, description, phone, target, manager_name, manager_email, city, manager_phone, _stopped in specs:
+        for key, name, description, phone, target, manager_name, manager_email, city, manager_phone in specs:
             company = _company(name, description, phone, target)
             db.add(company)
             db.commit()
@@ -185,24 +219,41 @@ def seed_demo() -> None:
             companies[key] = db.get(Company, company.id)
 
         catalog = {
-            "libyana": [
+            "jeel": [
                 ("منزلي", "40", 30, 100, 20, 5, True),
                 ("عائلي", "70", 30, 250, 50, 10, True),
                 ("أعمال", "120", 30, 500, 100, 20, True),
                 ("تجريبي متوقف", "15", 7, 20, 8, 2, False),
             ],
-            "madar": [
+            "awal": [
                 ("منزلي", "45", 30, 120, 30, 8, True),
                 ("عائلي", "85", 30, 300, 60, 15, True),
                 ("أعمال", "140", 30, 600, 120, 30, True),
             ],
-            "naher": [
+            "giga": [
                 ("منزلي", "35", 30, 80, 16, 4, True),
                 ("عائلي", "65", 30, 200, 40, 10, True),
                 ("أعمال", "110", 30, 400, 80, 20, True),
             ],
-            "wahat": [
+            "ion": [
+                ("منزلي", "38", 30, 90, 20, 5, True),
+                ("عائلي", "68", 30, 220, 40, 10, True),
+                ("أعمال", "115", 30, 450, 80, 20, True),
+            ],
+            "abraj": [
+                ("منزلي", "42", 30, 110, 25, 6, True),
+                ("عائلي", "78", 30, 280, 50, 12, True),
+                ("أعمال", "130", 30, 550, 100, 25, True),
+            ],
+            "hadatha": [
+                ("منزلي", "36", 30, 90, 18, 4, True),
+                ("عائلي", "66", 30, 210, 40, 10, True),
+                ("أعمال", "112", 30, 420, 80, 20, True),
+            ],
+            "ozone": [
                 ("منزلي", "30", 30, 60, 10, 2, True),
+                ("عائلي", "55", 30, 150, 25, 6, True),
+                ("أعمال", "95", 30, 300, 50, 12, True),
             ],
         }
         for key, rows in catalog.items():
@@ -228,42 +279,34 @@ def seed_demo() -> None:
         def pkg(key: str, name: str) -> Package:
             return _package(db, companies[key].id, name)
 
-        create_coupon(db, companies["libyana"].id, CouponCreate(code="WELCOME10", discount_amount=Decimal("10"), expires_at=utc_now() + timedelta(days=90), max_total_uses=30))
-        create_coupon(db, companies["libyana"].id, CouponCreate(code="ONCE5", discount_amount=Decimal("5"), expires_at=utc_now() + timedelta(days=60), max_total_uses=1))
-        create_coupon(db, companies["madar"].id, CouponCreate(code="MADAR20", discount_amount=Decimal("20"), expires_at=utc_now() + timedelta(days=60), max_total_uses=10))
-        create_coupon(db, companies["naher"].id, CouponCreate(code="NAHER15", discount_amount=Decimal("15"), expires_at=utc_now() + timedelta(days=45), max_total_uses=10))
-        summer = create_coupon(db, companies["madar"].id, CouponCreate(code="SUMMER", discount_amount=Decimal("8"), expires_at=utc_now() + timedelta(days=10), max_total_uses=5))
+        create_coupon(db, companies["jeel"].id, CouponCreate(code="WELCOME10", discount_amount=Decimal("10"), expires_at=utc_now() + timedelta(days=90), max_total_uses=30))
+        create_coupon(db, companies["jeel"].id, CouponCreate(code="ONCE5", discount_amount=Decimal("5"), expires_at=utc_now() + timedelta(days=60), max_total_uses=1))
+        create_coupon(db, companies["awal"].id, CouponCreate(code="AWAL20", discount_amount=Decimal("20"), expires_at=utc_now() + timedelta(days=60), max_total_uses=10))
+        create_coupon(db, companies["giga"].id, CouponCreate(code="GIGA15", discount_amount=Decimal("15"), expires_at=utc_now() + timedelta(days=45), max_total_uses=10))
+        summer = create_coupon(db, companies["awal"].id, CouponCreate(code="SUMMER", discount_amount=Decimal("8"), expires_at=utc_now() + timedelta(days=10), max_total_uses=5))
         expired = db.get(Coupon, summer.id)
         expired.expires_at = utc_now() - timedelta(days=2)
         db.commit()
 
         towers = {
-            "libyana": [("برج تاجوراء", 32.8872, 13.1913, 3500), ("برج جنزور", 32.8200, 13.0500, 2800), ("برج عين زارة", 32.8300, 13.2800, 2200)],
-            "madar": [("برج الصابري", 32.1167, 20.0667, 3000), ("برج السلماني", 32.0900, 20.1000, 2400)],
-            "naher": [("برج قصر أحمد", 32.3754, 15.0925, 3200), ("برج زليتن", 32.4674, 14.5687, 2600)],
-            "wahat": [("برج المهدية", 27.0377, 14.4283, 2000)],
+            "jeel": [("برج تاجوراء", 32.8872, 13.1913, 3500), ("برج جنزور", 32.8200, 13.0500, 2800), ("برج عين زارة", 32.8300, 13.2800, 2200)],
+            "awal": [("برج الصابري", 32.1167, 20.0667, 3000), ("برج السلماني", 32.0900, 20.1000, 2400)],
+            "giga": [("برج قصر أحمد", 32.3754, 15.0925, 3200), ("برج زليتن", 32.4674, 14.5687, 2600)],
+            "ion": [("برج الزاوية", 32.7522, 12.7278, 3000), ("برج صبراتة", 32.7933, 12.4885, 2400)],
+            "abraj": [("برج سوق الجمعة", 32.8500, 13.2200, 2700), ("برج قرقارش", 32.8700, 13.1200, 2200)],
+            "hadatha": [("برج الخمس", 32.6486, 14.2619, 2800), ("برج زليتن الوسط", 32.4674, 14.5720, 2000)],
+            "ozone": [("برج سبها", 27.0377, 14.4283, 2500), ("برج أوباري", 26.5900, 12.7700, 2000)],
         }
         for key, rows in towers.items():
             for name, lat, lng, radius in rows:
                 add_tower(db, companies[key].id, TowerBody(name=name, latitude=lat, longitude=lng, radius_meters=radius))
 
-        ads = {
-            "libyana": [("سرعة ثابتة طول الشهر", "باقة العائلة بـ 50 ميغابت تنزيل و10 ميغابت رفع."), ("تركيب خلال يومين", "الفرق الفنية تغطي طرابلس وجنزور وتاجوراء.")],
-            "madar": [("فايبر بدون عقد سنوي", "ادفع شهرياً وأوقف الباقة متى شئت."), ("خصم المحلات", "استخدم MADAR20 على باقة العائلة.")],
-            "naher": [("تغطية الساحل", "أبراج في مصراتة وزليتن."), ("دعم فني على الهاتف", "الرد خلال ساعات العمل.")],
-        }
-        for key, rows in ads.items():
-            for title, body in rows:
-                db.add(Advertisement(company_id=companies[key].id, title=title, body=body, created_at=utc_now()))
-        db.commit()
-
         clients = [
-            ("أحمد الزروق", "ahmad@demo.eshtrakei.local", "طرابلس", "0911111001", "200"),
-            ("فاطمة بن غشير", "fatima@demo.eshtrakei.local", "بنغازي", "0922222002", "90"),
+            ("عبد الصمد المجذوب", "abdelsamad@demo.eshtrakei.local", "طرابلس", "0911111001", "200"),
+            ("معاذ ابو شوشه", "muaath@demo.eshtrakei.local", "بنغازي", "0922222002", "90"),
             ("سالم المصراتي", "salem@demo.eshtrakei.local", "مصراتة", "0913333003", "60"),
-            ("نورا الترهوني", "nora@demo.eshtrakei.local", "بنغازي", "0924444004", "50"),
             ("يوسف الزاوي", "yousef@demo.eshtrakei.local", "الزاوية", "0915555005", "180"),
-            ("مريم الخماس", "mariam@demo.eshtrakei.local", "مصراتة", "0916666006", "100"),
+            ("مريم الخماس", "mariam@demo.eshtrakei.local", "سبها", "0916666006", "100"),
         ]
         people: dict[str, User] = {}
         for name, email, city, phone, wallet in clients:
@@ -298,28 +341,28 @@ def seed_demo() -> None:
         )
         db.commit()
 
-        ahmad = people["ahmad@demo.eshtrakei.local"]
-        fatima = people["fatima@demo.eshtrakei.local"]
+        abdelsamad = people["abdelsamad@demo.eshtrakei.local"]
+        muaath = people["muaath@demo.eshtrakei.local"]
         salem = people["salem@demo.eshtrakei.local"]
-        nora = people["nora@demo.eshtrakei.local"]
+        yousef = people["yousef@demo.eshtrakei.local"]
         mariam = people["mariam@demo.eshtrakei.local"]
 
-        ahmad_home = _buy(db, ahmad.id, companies["libyana"].id, pkg("libyana", "منزلي").id, "demo-ahmad-libyana-home", wallet=True)
-        ahmad_madar = _buy(db, ahmad.id, companies["madar"].id, pkg("madar", "عائلي").id, "demo-ahmad-madar-family")
-        _shift(db, ahmad_madar, start_days_ago=29, end_in_days=1)
+        abdelsamad_home = _buy(db, abdelsamad.id, companies["jeel"].id, pkg("jeel", "منزلي").id, "demo-abdelsamad-jeel-home", wallet=True)
+        abdelsamad_awal = _buy(db, abdelsamad.id, companies["awal"].id, pkg("awal", "عائلي").id, "demo-abdelsamad-awal-family")
+        _shift(db, abdelsamad_awal, start_days_ago=29, end_in_days=1)
 
-        fatima_naher = _buy(db, fatima.id, companies["naher"].id, pkg("naher", "عائلي").id, "demo-fatima-naher", coupon="NAHER15")
-        _shift(db, fatima_naher, start_days_ago=27, end_in_days=3)
+        muaath_giga = _buy(db, muaath.id, companies["giga"].id, pkg("giga", "عائلي").id, "demo-muaath-giga", coupon="GIGA15")
+        _shift(db, muaath_giga, start_days_ago=27, end_in_days=3)
 
-        salem_old = _buy(db, salem.id, companies["libyana"].id, pkg("libyana", "منزلي").id, "demo-salem-once", coupon="ONCE5")
+        salem_old = _buy(db, salem.id, companies["jeel"].id, pkg("jeel", "منزلي").id, "demo-salem-once", coupon="ONCE5")
         _shift(db, salem_old, start_days_ago=40, end_in_days=-10)
 
         failed = purchase(
             db,
             salem.id,
             PurchaseBody(
-                company_id=companies["madar"].id,
-                package_id=pkg("madar", "منزلي").id,
+                company_id=companies["awal"].id,
+                package_id=pkg("awal", "منزلي").id,
                 idempotency_key="demo-salem-fail",
                 simulated_outcome="failure",
             ),
@@ -327,8 +370,8 @@ def seed_demo() -> None:
         if failed.payment_status != "failed":
             raise SystemExit("expected a failed demo payment")
 
-        _buy(db, nora.id, companies["madar"].id, pkg("madar", "منزلي").id, "demo-nora-madar")
-        mariam_current = _buy(db, mariam.id, companies["naher"].id, pkg("naher", "منزلي").id, "demo-mariam-naher")
+        _buy(db, yousef.id, companies["ion"].id, pkg("ion", "منزلي").id, "demo-yousef-ion")
+        mariam_current = _buy(db, mariam.id, companies["ozone"].id, pkg("ozone", "منزلي").id, "demo-mariam-ozone")
         renewed = renew(
             db,
             mariam.id,
@@ -338,55 +381,57 @@ def seed_demo() -> None:
         if renewed.payment_status != "succeeded":
             raise SystemExit(f"renewal failed: {renewed.message}")
 
-        yousef = people["yousef@demo.eshtrakei.local"]
         history = [
-            (ahmad, "libyana", "عائلي", 110, 30),
-            (fatima, "libyana", "منزلي", 75, 30),
-            (salem, "libyana", "أعمال", 6, 2),
-            (nora, "madar", "أعمال", 100, 30),
-            (mariam, "madar", "عائلي", 48, 20),
-            (ahmad, "madar", "منزلي", 8, 3),
-            (yousef, "naher", "أعمال", 90, 30),
-            (fatima, "naher", "منزلي", 50, 20),
-            (nora, "naher", "عائلي", 4, 1),
+            (abdelsamad, "jeel", "عائلي", 110, 30),
+            (muaath, "jeel", "منزلي", 75, 30),
+            (salem, "jeel", "أعمال", 6, 2),
+            (yousef, "awal", "أعمال", 100, 30),
+            (mariam, "awal", "عائلي", 48, 20),
+            (abdelsamad, "awal", "منزلي", 8, 3),
+            (yousef, "giga", "أعمال", 90, 30),
+            (muaath, "giga", "منزلي", 50, 20),
+            (salem, "ion", "عائلي", 20, 15),
+            (abdelsamad, "abraj", "منزلي", 40, 30),
+            (muaath, "hadatha", "عائلي", 35, 30),
+            (mariam, "ozone", "عائلي", 60, 30),
         ]
         for client, key, name, days_ago, duration in history:
             _closed_sale(db, client, companies[key], pkg(key, name), days_ago=days_ago, duration_days=duration)
 
         create_complaint(
             db,
-            ahmad.id,
-            ComplaintCreate(kind="complaint", target="company", company_id=companies["libyana"].id, message="السرعة تنخفض بعد العاشرة مساءً في تاجوراء."),
+            abdelsamad.id,
+            ComplaintCreate(kind="complaint", target="company", company_id=companies["jeel"].id, message="السرعة تنخفض بعد العاشرة مساءً في تاجوراء."),
         )
         platform_complaint = create_complaint(
             db,
-            fatima.id,
+            muaath.id,
             ComplaintCreate(kind="complaint", target="platform", message="لم تصلني رسالة تأكيد الشراء على البريد."),
         )
         reply(db, platform_complaint.id, admin.id, ReplyBody(message="أعدنا إرسال الفاتورة. إذا لم تصل خلال ساعة راسلينا مرة أخرى."), None)
-        madar_ticket = create_complaint(
+        awal_ticket = create_complaint(
             db,
             salem.id,
-            ComplaintCreate(kind="technical_support", target="company", company_id=companies["madar"].id, message="جهاز الاستقبال يعيد التشغيل كل ساعة."),
+            ComplaintCreate(kind="technical_support", target="company", company_id=companies["awal"].id, message="جهاز الاستقبال يعيد التشغيل كل ساعة."),
         )
-        reply(db, madar_ticket.id, _user(db, "omar@demo.eshtrakei.local").id, ReplyBody(message="حدّثنا الجهاز عن بعد. راقب الإشارة اليوم وأخبرنا إن تكرر الانقطاع."), companies["madar"].id)
+        reply(db, awal_ticket.id, _user(db, "omar@demo.eshtrakei.local").id, ReplyBody(message="حدّثنا الجهاز عن بعد. راقب الإشارة اليوم وأخبرنا إن تكرر الانقطاع."), companies["awal"].id)
         create_complaint(
             db,
-            nora.id,
-            ComplaintCreate(kind="complaint", target="company", company_id=companies["madar"].id, message="الفاتورة تظهر مبلغاً مختلفاً عن سعر الباقة في المتجر."),
+            yousef.id,
+            ComplaintCreate(kind="complaint", target="company", company_id=companies["ion"].id, message="الفاتورة تظهر مبلغاً مختلفاً عن سعر الباقة في المتجر."),
         )
-        create_support(db, _user(db, "huda@demo.eshtrakei.local").id, companies["naher"].id, "نحتاج تفعيل شحن رصيد الشركة من داخل لوحة المدير.")
-        answered = create_support(db, _user(db, "sara@demo.eshtrakei.local").id, companies["libyana"].id, "هل يمكن رفع حد استخدام الكوبون WELCOME10؟")
+        create_support(db, _user(db, "huda@demo.eshtrakei.local").id, companies["giga"].id, "نحتاج تفعيل شحن رصيد الشركة من داخل لوحة المدير.")
+        answered = create_support(db, _user(db, "sara@demo.eshtrakei.local").id, companies["jeel"].id, "هل يمكن رفع حد استخدام الكوبون WELCOME10؟")
         reply(db, answered.id, admin.id, ReplyBody(message="يمكنكم إنشاء كوبون جديد بحد أعلى من صفحة الكوبونات."), None)
 
-        for key, amount in (("libyana", "400"), ("madar", "200"), ("naher", "80"), ("wahat", "50")):
+        for key, amount in (("jeel", "400"), ("awal", "200"), ("giga", "80"), ("ion", "120"), ("abraj", "300"), ("hadatha", "90"), ("ozone", "50")):
             credit_company(db, companies[key].id, Decimal(amount), "رصيد افتتاحي تجريبي")
 
         price = banner_price(db)
         banner_rows = [
-            ("libyana", "عرض الصيف من ليبيانا", "خصم على باقة العائلة هذا الشهر.", "pending"),
-            ("madar", "فايبر بنغازي", "تركيب مجاني للمشتركين الجدد.", "pending"),
-            ("naher", "تغطية زليتن", "برج جديد دخل الخدمة.", "pending"),
+            ("jeel", "عرض الصيف من جيل نت", "خصم على باقة العائلة هذا الشهر.", "pending"),
+            ("awal", "فايبر بنغازي", "تركيب مجاني للمشتركين الجدد.", "pending"),
+            ("giga", "تغطية زليتن", "برج جديد دخل الخدمة.", "pending"),
         ]
         created_banners = []
         for key, title, body, _status in banner_rows:
@@ -430,12 +475,12 @@ def seed_demo() -> None:
         )
         db.commit()
 
-        stop_company(db, companies["wahat"].id)
+        _assign_avatars(db)
         run_expiry_check(db)
 
         from backend.notifications.models import Notification
 
-        notice = db.scalar(select(Notification).where(Notification.client_id == ahmad.id).order_by(Notification.id.desc()))
+        notice = db.scalar(select(Notification).where(Notification.client_id == abdelsamad.id).order_by(Notification.id.desc()))
         if notice is not None:
             notice.is_read = True
             db.commit()

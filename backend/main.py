@@ -10,7 +10,6 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from backend._core.redis_client import get_redis
-from backend.advertisements.routes import router as ads_router
 from backend.banners.routes import router as banners_router
 from backend.coverage.routes import router as coverage_router
 from backend.wallets.routes import router as wallets_router
@@ -61,7 +60,6 @@ def create_app() -> FastAPI:
     register_middleware(app)
     app.include_router(auth_router)
     app.include_router(companies_router)
-    app.include_router(ads_router)
     app.include_router(packages_router)
     app.include_router(coupons_router)
     app.include_router(subscriptions_router)
@@ -76,7 +74,7 @@ def create_app() -> FastAPI:
 
     @app.get("/api/media/{folder}/{filename}")
     def media(folder: str, filename: str) -> FileResponse:
-        if folder not in {"logos", "ads", "banners", "avatars"} or "/" in filename or "\\" in filename or ".." in filename:
+        if folder not in {"logos", "banners", "avatars"} or "/" in filename or "\\" in filename or ".." in filename:
             raise AppError(404, "not_found", "الملف غير موجود")
         path = Path("backend/storage") / folder / filename
         if not path.is_file():
